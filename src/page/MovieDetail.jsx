@@ -29,6 +29,8 @@ export default function MovieDetail() {
     }
 
     // const { title, genres, overview, poster_path, vote_average } = movieDetail; 
+    // movieDetail이 정의되지 않았을 때, 예외처리를 해야 한다
+    // if (!movieDetail) {return <div>Loading...</div>;}
 
     return (
         <StyledDetail>
@@ -40,11 +42,6 @@ export default function MovieDetail() {
                     <h2>☆{ movieDetailData.vote_average }</h2>
                 </div>
                 <h2>장르: {movieDetailData.genres.map(genre => genre.name).join(', ')}</h2>
-                {/* <ul> 
-                    {genres.map(( genre, index ) => (
-                        <li key={ index }>{ genre.name }</li>
-                    ))}
-                </ul> */}
                 <h2>줄거리:</h2>
                 <p>{ movieDetailData.overview}</p>
             </div>
