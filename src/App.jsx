@@ -1,8 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
+import { Route, Routes } from 'react-router-dom';
+import NavBar from './components/NavBar';
 import MovieCard from '../src/components/MovieCard'
 import MovieDetail  from '../src/page/MovieDetail';
 import { createGlobalStyle } from 'styled-components';
+import Login from './components/Login';
+import Signup from './components/Signup'
 
 const GlobalStyle = createGlobalStyle`
   ::-webkit-scrollbar {
@@ -18,15 +20,17 @@ const GlobalStyle = createGlobalStyle`
 `
 
 function App () {
-
+ 
   return (
     
     <>
-      <Header />
+      <NavBar />
       <GlobalStyle />
         <Routes>
         <Route path="/" element={<MovieCard/>}></Route>
         <Route path="/details/:movieId" element={<MovieDetail />}></Route>
+        <Route path='/login' element={<Login/>}></Route>
+        <Route path='/signup' element={<Signup/>}></Route>
       </Routes>
     </>
     
