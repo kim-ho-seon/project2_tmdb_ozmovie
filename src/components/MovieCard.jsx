@@ -3,53 +3,88 @@ import '../App.css'
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 
-const StyledCard = styled.div`
-box-sizing: border-box;
-padding-top: 150px;
-ul { 
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    
-    li{
-      width: 300px;
-      /* overflow: hidden; */
-      position: relative;
-      padding: .3rem;
-      
-      img{
-        width: 100%;
-        object-fit: cover;
-        aspect-ratio: 8 / 12; /* 가로 8, 세로 12의 비율 유지 */
-        border-radius: 1rem;
-        transition: transform 0.3s ease;
-        
-        cursor: pointer;
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #111;
+  color: white;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 80px;
 
-        &:hover{
-          transform: scale(1.05); /* 호버 시 이미지 1.1배 확대 */
-          box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2)
-        }
+  h1 {
+    font-size: 3.5rem;
+    color: #fff;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+
+      a, input {
+        margin-left: 0.3rem;
+        height: 30px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+        text-decoration: none;
       }
-     
-      div{
-        padding: .6rem;
+
+      a {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-      h3{ 
-        padding-right: 50px;
-        white-space: nowrap; /* 줄 바꿈 방지 */
-        overflow: hidden; /* 넘치는 내용 숨김 */
-        text-overflow: ellipsis; /* 넘치는 내용에 ... 표시 */
-        }
-        span{
-        }
+        justify-content: center;
+        color: white;
+        background-color: #fabf0e;
+        width: 65px;
+      }
+
+      a:hover {
+        background-color: #e2b83a;
+      }
+
+      input {
+        padding: 0.5rem;
       }
     }
+  }
+
+  /* 미디어 쿼리 (480px 이하) */
+  @media (max-width: 480px) {
+    ul li a {
+      /* 첫 번째 링크(Dark Mode)의 텍스트를 🌙로 변경 */
+      &:nth-child(1) {
+        &::after {
+          content: '🌙';
+        }
+        &::before {
+          content: '';
+        }
+        font-size: 1.5rem;
+        background-color: transparent; /* 배경색 없애기 (원한다면) */
+      }
     }
-`
+  }
+`;
+
 
 export default function MovieCard({ searchResults }) {
   const [movies, setMovies] = useState([]); // 초기 영화 상태 (빈 배열로 설정)

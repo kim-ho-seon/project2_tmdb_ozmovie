@@ -20,6 +20,7 @@ const StyledHeader = styled.div`
   h1 {
     font-size: 3.5rem;
     color: #fff;
+    white-space: nowrap;
 
     a {
       text-decoration: none;
@@ -32,38 +33,82 @@ const StyledHeader = styled.div`
     display: flex;
     margin: 0;
     padding: 0;
+    gap: .3rem;
     
     li {
       display: flex;
       align-items: center;
+      gap: .3rem;
 
       a, input {
-        margin-left: .3rem;
-        height: 30px;        
-        font-size: .8rem;
+        height: 30px;
+        font-size: 0.8rem;
         font-weight: 500;
         border: none;
         border-radius: 7px;
         cursor: pointer;
         text-decoration: none;
       }
-      a{
+
+      a {
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         background-color: #fabf0e;
         width: 65px;
+        white-space: nowrap;
+        &:nth-child(2){
+          display: none;
+        }
       }
-       a:hover {
-          background-color: #e2b83a;
-     }
-       input{
-          padding: .5rem;
-      }      
+
+      a:hover {
+        background-color: #e2b83a;
+      }
+
+      input {
+        padding: 0.5rem;
+      }
     }
   }
-`
+
+  /* 모바일 화면용 미디어 쿼리 (480px 이하) */
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 2em;
+      /* 'OZ무비'에서 'OZ'만 보이도록 */
+      }
+
+    ul {
+      li {
+        a {
+          width: 50px;
+          padding: 3px;
+          font-size: 0.7rem;
+          &:nth-child(1){
+            display: none;
+          }
+          &:nth-child(2){
+            display: block;
+            background-color: #111;
+            font-size: 1.5rem;
+            text-align: center;
+            line-height: 1.5rem;
+          }
+        }
+
+        input {
+          width: 80px;
+        }
+      }
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  color: white;
+`;
 export default function NavBar ({ setSearchResults })  { // setSearchResults prop 추가
   const [searchQuery, setSearchQuery] = useState(''); // 검색어 상태
   const [loading, setLoading] = useState(false); // 로딩 상태
@@ -101,6 +146,7 @@ export default function NavBar ({ setSearchResults })  { // setSearchResults pro
       <ul>
         <li>
           <Link to='/'>다크모드</Link>
+          <Link className="dark-mode-link" to='/'>🌙</Link>
           <Link to='/login'>로그인</Link>
           <Link to='/signup'>회원가입</Link>
         </li>
