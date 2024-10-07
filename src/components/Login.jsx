@@ -6,6 +6,7 @@ const StyledLogin = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  padding-top: 120px;
   /* background-color: #f7f7f7; */
 
   form {
@@ -36,7 +37,7 @@ const StyledLogin = styled.div`
         
         &:focus {
           outline: none;
-          border: 2px solid #007BFF;
+          border: 2px solid #fabf0e;
         }
        }
       }
@@ -45,7 +46,7 @@ const StyledLogin = styled.div`
     button {
       width: 100%;
       padding: 10px;
-      background-color: #007BFF;
+      background-color: #fabf0e;
       color: white;
       border: none;
       border-radius: 4px;
@@ -54,7 +55,7 @@ const StyledLogin = styled.div`
       transition: background-color 0.3s;
 
       &:hover {
-        background-color: #0056b3;
+        background-color: #e2b83a;
       }
     }
   `

@@ -6,19 +6,20 @@ const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  background-color: #333;
+  padding: 10px 20px;
+  background-color: #111;
   color: white;
   position: fixed;
   top: 0;
   width: 100%;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+  height: 80px;
   h1 {
     font-size: 3.5rem;
     color: #fff;
     a {
+      white-space: nowrap;
       text-decoration: none;
       color: inherit;
     }
@@ -36,28 +37,30 @@ const StyledHeader = styled.div`
       align-items: center;
 
       a {
-        margin-left: .5rem;
+        margin-left: .3rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 90px;
-        height: 40px;
-        font-size: 1rem;
+        width: 70px;
+        height: 30px;
+        font-size: .8rem;
+        font-weight: 500;
         color: white;
-        background-color: #007BFF;
+        background-color: #fabf0e;
         border: none;
-        border-radius: 4px;
+        border-radius: 7px;
         cursor: pointer;
         text-decoration: none;  
 
         &:hover {
-          background-color: #0056b3;
+          background-color: #e2b83a;
         }      
       }
     }
   }
 `
 export default function Header() {
+
     return (
         <StyledHeader>
             <h1>

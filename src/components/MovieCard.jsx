@@ -4,24 +4,41 @@ import styled from "styled-components";
 import { useNavigate} from 'react-router-dom';
 
 const StyledCard = styled.div`
-margin-top: 120px;
+box-sizing: border-box;
+padding-top: 150px;
 ul { 
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    
     li{
-      width: 350px;
-      height: 600px;
+      width: 300px;
+      /* overflow: hidden; */
+      position: relative;
+      padding: .3rem;
+      
       img{
-        width: 350px;
-        height: 550px;
+        width: 100%;
+        object-fit: cover;
+        aspect-ratio: 8 / 12; /* 가로 8, 세로 12의 비율 유지 */
+        border-radius: 1rem;
+        transition: transform 0.3s ease;
+        
+        cursor: pointer;
+
+        &:hover{
+          transform: scale(1.05); /* 호버 시 이미지 1.1배 확대 */
+          box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2)
+        }
       }
+     
       div{
+        padding: .6rem;
         display: flex;
         align-items: center;
         justify-content: space-between;
-      h2{ 
+      h3{ 
         padding-right: 50px;
         white-space: nowrap; /* 줄 바꿈 방지 */
         overflow: hidden; /* 넘치는 내용 숨김 */
@@ -33,6 +50,10 @@ ul {
     }
     }
 `
+
+// https://api.themoviedb.org/3/movie/now_playing?language=ko-KR&page=1&api_key=${apiKey}
+// "total_pages": 249, "total_results": 4980
+
 export default function Card() {
 
   const [movies, setMovies] = useState([])
@@ -62,7 +83,7 @@ export default function Card() {
           <li key={el.id}>
             <img onClick={() => navigate(`/details/${el.id}`)} src={`https://image.tmdb.org/t/p/w500/${el.poster_path}`} alt={el.title}/>
             <div>
-              <h2>{el.title}</h2>
+              <h3>{el.title}</h3>
               <span>☆{el.vote_average}</span>
             </div>
           </li>
