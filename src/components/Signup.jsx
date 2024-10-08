@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import '../App.css'
 import { useState } from 'react';
+import { createClient } from '@supabase/supabase-js';
 
 const StyledLogin = styled.div`
   display: flex;
@@ -64,6 +65,14 @@ const StyledLogin = styled.div`
         color: red;
     }
 `
+// Supabase 클라이언트 설정
+const supabaseUrl = import.meta.env.VITE_SUPA_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPA_API_KEY;
+
+// console.log(supabaseUrl);
+// console.log(supabaseAnonKey);
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function Signup() {
 
@@ -74,7 +83,8 @@ export default function Signup() {
         confirmPassword: ''
     });
 
-    const [errors, setErrors] = useState({});
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     // 입력값 변경 핸들러
     const handleChange = (e) => {
@@ -83,29 +93,56 @@ export default function Signup() {
             ...formSignup,
             [name]: value
         });
+        setError('');
     };
 
-    // 폼 유효성 검사
-    const validateForm = () => {
-        let formErrors = {};
-        if (formSignup.password !== formSignup.confirmPassword) {
-            formErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
-        }
-        return formErrors;
-    };
+    // // 폼 유효성 검사
+    // const validateForm = () => {
+    //     let formErrors = {};
+    //     if (formSignup.password !== formSignup.confirmPassword) {
+    //         formErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+    //     }
+    //     return formErrors;
+    // };
 
     // 폼 제출 핸들러
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const validationErrors = validateForm();
-    
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
+        const { name, email, password, confirmPassword } = formSignup;
+
+        // 유효성 검사
+        if (!name || !email || !password || !confirmPassword) {
+            setError('모든 필드를 입력해주세요.');
+            return;
+        }
+        // if (!validateEmail(email)) {
+        //     setError('유효한 이메일 주소를 입력해주세요.');
+        //     return;
+        // }
+        if (password.length < 6) {
+            setError('비밀번호는 최소 6자 이상이어야 합니다.');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setError('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+
+        // Supabase에 유저 생성 요청
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                name: name,
+              },
+            },
+          });
+
+        if (error) {
+            setError(error.message);
         } else {
-            setErrors({});
-            // 회원가입 처리 로직 추가
-            
-            console.log('회원가입 성공:');
+            setSuccess('회원가입이 완료되었습니다!');
         }
     };
 
@@ -145,6 +182,8 @@ export default function Signup() {
                         onChange={handleChange}
                         required
                     />
+                </fieldset>
+                <fieldset>
                     <label htmlFor="confirmPassword">비밀번호 확인</label>
                     <input
                         type="password"
@@ -154,8 +193,9 @@ export default function Signup() {
                         onChange={handleChange}
                         required
                     />
-                    {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
                 </fieldset>
+                {error && <div className="error">{error}</div>}
+                {success && <div className="success">{success}</div>}
                 <button type="submit">회원가입</button>
             </form>
         </StyledLogin>
