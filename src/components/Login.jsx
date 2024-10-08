@@ -44,20 +44,25 @@ const StyledLogin = styled.div`
        }
       }
     }
+    div{
+      display: flex; 
+      gap: 10px;
 
-    button {
-      width: 100%;
-      padding: 10px;
-      background-color: #fabf0e;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s;
+        button {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 8px;
+          background-color: #fabf0e;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: background-color 0.3s;
 
-      &:hover {
-        background-color: #e2b83a;
+            &:hover {
+              background-color: #e2b83a;
+          }
       }
     }
   `
@@ -109,6 +114,26 @@ export default function Login({ setIsLoggedIn }) {
     }
   };
 
+  const googleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) {
+        setError(error.message);
+        setIsLoggedIn(false); // 로그인 실패 시 상태 업데이트
+      } else {
+        setIsLoggedIn(true); // 로그인 성공 시 상태 업데이트
+        alert('구글 로그인 성공');
+        // navigate('/'); // 리스트 페이지로 리다이렉트
+      }
+    } catch (error) {
+      setError('구글 로그인에 실패했습니다.');
+      setIsLoggedIn(false); // 로그인 실패 시 상태 업데이트
+    }
+  };
+
   return (
     <StyledLogin>
       <form onSubmit={handleLogin}>
@@ -135,7 +160,10 @@ export default function Login({ setIsLoggedIn }) {
           />
         </fieldset>
         {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">로그인</button>
+        <div>
+          <button type="submit">로그인</button>
+          <button onClick={googleLogin}>구글 로그인</button> 
+        </div>
       </form>
     </StyledLogin>
   );

@@ -44,7 +44,10 @@ const StyledLogin = styled.div`
        }
       }
     }
-
+    div{
+        display: flex;
+        gap: 10px;
+    }
     button {
       width: 100%;
       padding: 10px;
@@ -74,7 +77,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPA_API_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default function Signup() {
+export default function Signup({setIsLoggedIn}) {
 
     const [formSignup, setFormSignup] = useState({
         name: '',
@@ -145,7 +148,26 @@ export default function Signup() {
             setSuccess('회원가입이 완료되었습니다!');
         }
     };
-
+    const googleLogin = async () => {
+        try {
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+          });
+    
+          if (error) {
+            setError(error.message);
+            setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
+          } else {
+            setIsLoggedIn(true); // 회원가입 성공 시 상태 업데이트
+            alert('구글 회원가입 성공');
+            // navigate('/'); // 리스트 페이지로 리다이렉트
+          }
+        } catch (error) {
+          setError('구글 회원가입에 실패했습니다.');
+          setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
+        }
+      };
+    
     return (
 
         <StyledLogin>
@@ -196,7 +218,10 @@ export default function Signup() {
                 </fieldset>
                 {error && <div className="error">{error}</div>}
                 {success && <div className="success">{success}</div>}
-                <button type="submit">회원가입</button>
+                <div>
+                    <button type="submit">회원가입</button>
+                    <button onClick={googleLogin}>구글 회원가입</button>
+                </div> 
             </form>
         </StyledLogin>
     );
