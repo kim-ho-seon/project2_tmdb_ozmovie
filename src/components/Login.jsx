@@ -78,7 +78,7 @@ export default function Login({ setIsLoggedIn }) {
     email: '',
     password: '',
   });
-  
+
   const [error, setError] = useState('');
   const navigate = useNavigate(); // useNavigate 훅 사용
 
@@ -118,6 +118,12 @@ export default function Login({ setIsLoggedIn }) {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
       });
 
       if (error) {
@@ -162,7 +168,7 @@ export default function Login({ setIsLoggedIn }) {
         {error && <p style={{ color: 'red' }}>{error}</p>}
         <div>
           <button type="submit">로그인</button>
-          <button onClick={googleLogin}>구글 로그인</button> 
+          <button onClick={googleLogin}>구글 로그인</button>
         </div>
       </form>
     </StyledLogin>

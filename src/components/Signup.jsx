@@ -77,152 +77,158 @@ const supabaseAnonKey = import.meta.env.VITE_SUPA_API_KEY;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default function Signup({setIsLoggedIn}) {
+export default function Signup({ setIsLoggedIn }) {
 
-    const [formSignup, setFormSignup] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+  const [formSignup, setFormSignup] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // 입력값 변경 핸들러
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormSignup({
+      ...formSignup,
+      [name]: value
+    });
+    setError('');
+  };
+
+  // // 폼 유효성 검사
+  // const validateForm = () => {
+  //     let formErrors = {};
+  //     if (formSignup.password !== formSignup.confirmPassword) {
+  //         formErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
+  //     }
+  //     return formErrors;
+  // };
+
+  // 폼 제출 핸들러
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { name, email, password, confirmPassword } = formSignup;
+
+    // 유효성 검사
+    if (!name || !email || !password || !confirmPassword) {
+      setError('모든 필드를 입력해주세요.');
+      return;
+    }
+    // if (!validateEmail(email)) {
+    //     setError('유효한 이메일 주소를 입력해주세요.');
+    //     return;
+    // }
+    if (password.length < 6) {
+      setError('비밀번호는 최소 6자 이상이어야 합니다.');
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    // Supabase에 유저 생성 요청
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name,
+        },
+      },
     });
 
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    if (error) {
+      setError(error.message);
+    } else {
+      setSuccess('회원가입이 완료되었습니다!');
+    }
+  };
+  const googleLogin = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
 
-    // 입력값 변경 핸들러
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormSignup({
-            ...formSignup,
-            [name]: value
-        });
-        setError('');
-    };
+      if (error) {
+        setError(error.message);
+        setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
+      } else {
+        setIsLoggedIn(true); // 회원가입 성공 시 상태 업데이트
+        alert('구글 회원가입 성공');
+        // navigate('/'); // 리스트 페이지로 리다이렉트
+      }
+    } catch (error) {
+      setError('구글 회원가입에 실패했습니다.');
+      setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
+    }
+  };
 
-    // // 폼 유효성 검사
-    // const validateForm = () => {
-    //     let formErrors = {};
-    //     if (formSignup.password !== formSignup.confirmPassword) {
-    //         formErrors.confirmPassword = '비밀번호가 일치하지 않습니다.';
-    //     }
-    //     return formErrors;
-    // };
+  return (
 
-    // 폼 제출 핸들러
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const { name, email, password, confirmPassword } = formSignup;
-
-        // 유효성 검사
-        if (!name || !email || !password || !confirmPassword) {
-            setError('모든 필드를 입력해주세요.');
-            return;
-        }
-        // if (!validateEmail(email)) {
-        //     setError('유효한 이메일 주소를 입력해주세요.');
-        //     return;
-        // }
-        if (password.length < 6) {
-            setError('비밀번호는 최소 6자 이상이어야 합니다.');
-            return;
-        }
-        if (password !== confirmPassword) {
-            setError('비밀번호가 일치하지 않습니다.');
-            return;
-        }
-
-        // Supabase에 유저 생성 요청
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-              data: {
-                name: name,
-              },
-            },
-          });
-
-        if (error) {
-            setError(error.message);
-        } else {
-            setSuccess('회원가입이 완료되었습니다!');
-        }
-    };
-    const googleLogin = async () => {
-        try {
-          const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-          });
-    
-          if (error) {
-            setError(error.message);
-            setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
-          } else {
-            setIsLoggedIn(true); // 회원가입 성공 시 상태 업데이트
-            alert('구글 회원가입 성공');
-            // navigate('/'); // 리스트 페이지로 리다이렉트
-          }
-        } catch (error) {
-          setError('구글 회원가입에 실패했습니다.');
-          setIsLoggedIn(false); // 회원가입 실패 시 상태 업데이트
-        }
-      };
-    
-    return (
-
-        <StyledLogin>
-            <form onSubmit={handleSubmit}>
-                <fieldset>
-                    <label htmlFor="name">이름</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formSignup.name}
-                        onChange={handleChange}
-                        required
-                    />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="email">이메일</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formSignup.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="password">비밀번호</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        value={formSignup.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </fieldset>
-                <fieldset>
-                    <label htmlFor="confirmPassword">비밀번호 확인</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        value={formSignup.confirmPassword}
-                        onChange={handleChange}
-                        required
-                    />
-                </fieldset>
-                {error && <div className="error">{error}</div>}
-                {success && <div className="success">{success}</div>}
-                <div>
-                    <button type="submit">회원가입</button>
-                    <button onClick={googleLogin}>구글 회원가입</button>
-                </div> 
-            </form>
-        </StyledLogin>
-    );
+    <StyledLogin>
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+          <label htmlFor="name">이름</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formSignup.name}
+            onChange={handleChange}
+            required
+          />
+        </fieldset>
+        <fieldset>
+          <label htmlFor="email">이메일</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formSignup.email}
+            onChange={handleChange}
+            required
+          />
+        </fieldset>
+        <fieldset>
+          <label htmlFor="password">비밀번호</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formSignup.password}
+            onChange={handleChange}
+            required
+          />
+        </fieldset>
+        <fieldset>
+          <label htmlFor="confirmPassword">비밀번호 확인</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            value={formSignup.confirmPassword}
+            onChange={handleChange}
+            required
+          />
+        </fieldset>
+        {error && <div className="error">{error}</div>}
+        {success && <div className="success">{success}</div>}
+        <div>
+          <button type="submit">회원가입</button>
+          <button onClick={googleLogin}>구글 회원가입</button>
+        </div>
+      </form>
+    </StyledLogin>
+  );
 };
